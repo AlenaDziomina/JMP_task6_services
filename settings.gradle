@@ -1,2 +1,5 @@
 rootProject.name = 'services'
+include 'rest'
+include 'legacy'
+include 'service'
 

@@ -1,6 +1,6 @@
 group 'com.grouk.services'
 
-apply plugin: 'war'
+apply plugin: 'java'
 
 sourceCompatibility = 1.8
 
@@ -10,11 +10,10 @@ repositories {
 
 dependencies {
 
-    compile project(':rest')
+    compile project(':service')
 
     compile group: 'com.sun.jersey', name: 'jersey-server', version: '1.8'
 
-    compile group: 'mysql', name: 'mysql-connector-java', version: '5.1.13'
 
     testCompile group: 'junit', name: 'junit', version: '4.11'
 }
