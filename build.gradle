@@ -8,13 +8,40 @@ repositories {
     mavenCentral()
 }
 
+subprojects {
+    apply plugin: 'java'
+
+    sourceCompatibility = 1.8
+
+    repositories {
+        mavenCentral()
+
+        dependencies {
+            compile group: 'com.sun.jersey', name: 'jersey-server', version: '1.8'
+            compile group: 'com.sun.jersey', name: 'jersey-json', version: '1.8'
+
+            compile group: 'com.sun.jersey.contribs', name: 'jersey-guice', version: '1.19'
+
+            compile group: 'mysql', name: 'mysql-connector-java', version: '5.1.13'
+
+            testCompile group: 'junit', name: 'junit', version: '4.11'
+        }
+    }
+}
+
 dependencies {
-
     compile project(':rest')
+}
 
-    compile group: 'com.sun.jersey', name: 'jersey-server', version: '1.8'
+project(':rest'){
+    dependencies{
+        compile project(':service')
+    }
+}
 
-    compile group: 'mysql', name: 'mysql-connector-java', version: '5.1.13'
-
-    testCompile group: 'junit', name: 'junit', version: '4.11'
+project(':service'){
+    dependencies{
+        compile project(':legacy')
+        compile project(':common')
+    }
 }

@@ -15,6 +15,11 @@
             <param-name>com.sun.jersey.config.property.packages</param-name>
             <param-value>com.grouk.services</param-value>
         </init-param>
+        <init-param>
+            <param-name>com.sun.jersey.api.json.POJOMappingFeature</param-name>
+            <param-value>true</param-value>
+        </init-param>
+
         <load-on-startup>1</load-on-startup>
     </servlet>
 
@@ -22,23 +27,4 @@
         <servlet-name>jersey-servlet</servlet-name>
         <url-pattern>/rest/*</url-pattern>
     </servlet-mapping>
-
-    <!--<context-param>-->
-        <!--<param-name>contextConfigLocation</param-name>-->
-        <!--<param-value>/WEB-INF/spring/beans.xml</param-value>-->
-    <!--</context-param>-->
-    <!--<listener>-->
-        <!--<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>-->
-    <!--</listener>-->
-
-    <!-- CXFServlet -->
-    <!--<servlet>-->
-        <!--<servlet-name>cxfServlet</servlet-name>-->
-        <!--<servlet-class>org.apache.cxf.transport.servlet.CXFServlet</servlet-class>-->
-        <!--<load-on-startup>1</load-on-startup>-->
-    <!--</servlet>-->
-    <!--<servlet-mapping>-->
-        <!--<servlet-name>cxfServlet</servlet-name>-->
-        <!--<url-pattern>/*</url-pattern>-->
-    <!--</servlet-mapping>-->
 </web-app>

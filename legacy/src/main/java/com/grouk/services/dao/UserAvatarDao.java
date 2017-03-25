@@ -1,9 +1,9 @@
 package com.grouk.services.dao;
 
-import javax.ws.rs.ext.Provider;
-
 import com.grouk.services.model.UserAvatar;
 import com.sun.jersey.spi.resource.Singleton;
+
+import javax.ws.rs.ext.Provider;
 
 /**
  * User Avatar DAO
@@ -12,6 +12,7 @@ import com.sun.jersey.spi.resource.Singleton;
 @Provider
 @Singleton
 public class UserAvatarDao extends AbstractDao<UserAvatar> {
+
 
     public UserAvatar getUserAvatar(Long avatarId) {
         return null;
@@ -28,4 +29,8 @@ public class UserAvatarDao extends AbstractDao<UserAvatar> {
     public void deleteUserAvatar(Long avatarId) {
 
     }
+
+
+
+
 }

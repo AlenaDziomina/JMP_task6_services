@@ -1,18 +1,13 @@
 package com.grouk.services.dao;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import com.grouk.services.exception.SqlDaoException;
+import com.grouk.services.util.ResultSetMapper;
+
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.stream.IntStream;
-
-import com.grouk.services.exception.SqlDaoException;
-import com.grouk.services.util.ResultSetMapper;
 
 /**
  * Abstract DAO with CRUD methods
@@ -49,9 +44,26 @@ class AbstractDao<T> {
         }
     }
 
-    Integer create(String query, List<Object> parameters) {
+    T find(String query, List<Object> parameters, ResultSetMapper<T> mapper) {
+        try (Connection con = DriverManager.getConnection(DB_URL); PreparedStatement ps = con.prepareStatement(query)) {
+            if (parameters != null) {
+                setParameters(ps, parameters);
+            }
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return mapper.map(rs);
+                } else {
+                    throw new SqlDaoException("There are NO such entity in database.");
+                }
+            }
+        } catch (SQLException e) {
+            throw new SqlDaoException(e);
+        }
+    }
+
+    Long create(String query, List<Object> parameters) {
         try (Connection con = DriverManager.getConnection(DB_URL);
-                PreparedStatement ps = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+             PreparedStatement ps = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
 
             setParameters(ps, parameters);
             int affectedRows = ps.executeUpdate();
@@ -61,7 +73,7 @@ class AbstractDao<T> {
 
             try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
                 if (generatedKeys.next()) {
-                    return generatedKeys.getInt(1);
+                    return generatedKeys.getLong(1);
                 } else {
                     throw new SQLException("Creating failed, no ID obtained.");
                 }

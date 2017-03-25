@@ -1,17 +1,13 @@
 package com.grouk.services.rest;
 
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
-
+import com.grouk.services.exception.ExceptionFactory;
+import com.grouk.services.model.UserAccount;
 import com.grouk.services.service.UserAccountService;
 import com.sun.jersey.api.core.InjectParam;
+
+import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
+import java.util.List;
 
 /**
  * User Account Rest Service
@@ -19,57 +15,77 @@ import com.sun.jersey.api.core.InjectParam;
  */
 @Path("/user")
 public class UserAccountRestService {
-
-    @Context
-    UriInfo uriInfo;
-
     private final UserAccountService userAccountService;
+    private final ExceptionFactory exceptionFactory;
 
-    public UserAccountRestService(@InjectParam UserAccountService userAccountService) {
+    public UserAccountRestService(@InjectParam UserAccountService userAccountService, @InjectParam ExceptionFactory
+            exceptionFactory) {
         this.userAccountService = userAccountService;
+        this.exceptionFactory = exceptionFactory;
     }
 
     @GET
-    @Path("/")
-    public Response getUserAccountList() {
-        String output =
-                "User Account List" + uriInfo + "/n" + userAccountService + "/n" + userAccountService.uriInfo + "/n"
-                        + userAccountService.userAvatarDao + "/n" + userAccountService.userProfileDao;
-        return Response.status(200).entity(output).build();
+    @Path("")
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    public List<UserAccount> getUserAccountList() {
+        try {
+            return userAccountService.getUserAccountList();
+        } catch (Exception e) {
+            throw exceptionFactory.createInternalException(e);
+        }
     }
 
     @GET
     @Path("/{id}")
-    public Response getUserAccount(@PathParam("id") Long userId) {
-        String output = "User Account  : " + userId;
-        return Response.status(200).entity(output).build();
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    public UserAccount getUserAccount(@PathParam("id") Long userId) {
+        try {
+            return userAccountService.getUserAccount(userId);
+        } catch (Exception e) {
+            throw exceptionFactory.createInternalException(e);
+        }
     }
 
     @GET
     @Path("/create")
-    public Response newUserAccountList() {
-        String output = "NEW User Account List";
-        return Response.status(200).entity(output).build();
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    public UserAccount newUserAccountList() {
+        try {
+            return userAccountService.getDefaultUserAccount();
+        } catch (Exception e) {
+            throw exceptionFactory.createInternalException(e);
+        }
     }
 
     @POST
     @Path("/{id}")
-    public Response updateUserAccount(@PathParam("id") Long userId) {
-        String output = "Update User Account  : " + userId;
-        return Response.status(200).entity(output).build();
+    @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    public void updateUserAccount(@PathParam("id") Long userId, UserAccount userAccount) {
+        try {
+            userAccountService.updateUserAccount(userId, userAccount);
+        } catch (Exception e) {
+            throw exceptionFactory.createInternalException(e);
+        }
     }
 
     @PUT
-    @Path("/")
-    public Response createUserAccount() {
-        String output = "Create User Account";
-        return Response.status(200).entity(output).build();
+    @Path("")
+    @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    public void createUserAccount(UserAccount userAccount) {
+        try {
+            userAccountService.createUserAccount(userAccount);
+        } catch (Exception e) {
+            throw exceptionFactory.createInternalException(e);
+        }
     }
 
     @DELETE
     @Path("/{id}")
-    public Response deleteUserAccount(@PathParam("id") Long userId) {
-        String output = "Delete User Account: " + userId;
-        return Response.status(200).entity(output).build();
+    public void deleteUserAccount(@PathParam("id") Long userId) {
+        try {
+            userAccountService.deleteUserAccount(userId);
+        } catch (Exception e) {
+            throw exceptionFactory.createInternalException(e);
+        }
     }
 }
