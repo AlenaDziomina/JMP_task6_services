@@ -3,4 +3,5 @@ include 'rest'
 include 'legacy'
 include 'service'
 include 'common'
+include 'manager'
 

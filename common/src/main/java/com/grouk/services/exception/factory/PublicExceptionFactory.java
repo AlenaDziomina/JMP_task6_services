@@ -1,5 +1,6 @@
-package com.grouk.services.exception;
+package com.grouk.services.exception.factory;
 
+import com.grouk.services.exception.PublicException;
 import com.sun.jersey.spi.resource.Singleton;
 
 import javax.ws.rs.ext.Provider;
@@ -13,7 +14,7 @@ import static com.grouk.services.exception.ExceptionConstants.INTERNAL_ERROR_MSG
  */
 @Provider
 @Singleton
-public class ExceptionFactory {
+public class PublicExceptionFactory {
 
     public PublicException getPublicException(int errorCode, String errorMsg) {
         return new PublicException(errorCode, errorMsg);

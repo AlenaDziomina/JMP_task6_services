@@ -1,5 +1,6 @@
 package com.grouk.services.converter;
 
+import com.grouk.services.exception.factory.ConverterExceptionFactory;
 import com.sun.jersey.spi.resource.Singleton;
 
 import javax.ws.rs.core.Application;
@@ -19,7 +20,7 @@ import java.util.Set;
 @Singleton
 public class ConverterProvider {
 
-    private Map<Class, AbstractConverter> converterMap;
+    private Map<Class, HashMap<Class, AbstractConverter>> converterMap;
 
     public ConverterProvider(@Context Application application) {
         converterMap = new HashMap<>();
@@ -27,21 +28,54 @@ public class ConverterProvider {
         classes.forEach(this::init);
     }
 
+    @SuppressWarnings("unchecked")
+    public Object convert(Properties context, Object src, Class destClass) {
+        if (src == null) {
+            throw ConverterExceptionFactory.sourceIsNullException();
+        }
+
+        if (destClass == null) {
+            throw ConverterExceptionFactory.destinationClassIsNullException();
+        }
+
+        Class srcClass = src.getClass();
+        AbstractConverter converter = getConverter(srcClass, destClass);
+        return converter.convert(context, src);
+    }
+
     private void init(Class aClass) {
         if (aClass.isAnnotationPresent(Converter.class)) {
             Converter annotation = (Converter) aClass.getAnnotation(Converter.class);
             Class destClass = annotation.destClass();
+            Class srcClass = annotation.srcClass();
             try {
                 AbstractConverter converter = (AbstractConverter) aClass.newInstance();
-                converterMap.put(destClass, converter);
+                addConverter(converter, srcClass, destClass);
             } catch (Exception e) {
                 throw new RuntimeException("Cannot initiate converter " + aClass);
             }
         }
     }
 
-    public Object convert(Properties context, Class aClass) {
-        AbstractConverter converter = converterMap.get(aClass);
-        return converter.convert(context);
+    private void addConverter(AbstractConverter converter, Class srcClass, Class destClass) {
+        HashMap<Class, AbstractConverter> converters = converterMap.get(srcClass);
+        if (converters == null) {
+            converters = new HashMap<>();
+            converterMap.put(srcClass, converters);
+        }
+        converters.put(destClass, converter);
+    }
+
+    private AbstractConverter getConverter(Class srcClass, Class destClass) {
+        HashMap<Class, AbstractConverter> converters = converterMap.get(srcClass);
+        if (converters == null) {
+            throw ConverterExceptionFactory.converterNotFoundException(srcClass);
+        }
+
+        AbstractConverter converter = converters.get(destClass);
+        if (converter == null) {
+            throw ConverterExceptionFactory.converterNotFoundException(srcClass);
+        }
+        return converter;
     }
 }

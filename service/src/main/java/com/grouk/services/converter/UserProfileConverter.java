@@ -7,26 +7,20 @@ import javax.ws.rs.ext.Provider;
 import java.util.Properties;
 
 /**
- * Converter to UserProfile
+ * Converter UserProfile to UserAccount
  * Created by Alena on 25.03.2017.
  */
 @Provider
-@Converter(destClass = UserProfile.class)
-public class UserProfileConverter extends AbstractConverter<UserProfile> {
+@Converter(srcClass = UserProfile.class, destClass = UserAccount.class)
+public class UserProfileConverter extends AbstractConverter<UserProfile, UserAccount> {
 
     @Override
-    public UserProfile convert(Properties context) {
-        UserProfile user = new UserProfile();
-        if (context == null) {
-            return user;
-        }
-
-        UserAccount account = (UserAccount) context.get("account");
-        if (account != null) {
-            user.setId(account.getUserId());
-            user.setFirstName(account.getFirstName());
-            user.setLastName(account.getLastName());
-        }
-        return user;
+    public UserAccount convert(Properties context, UserProfile userProfile) {
+        UserAccount userAccount = new UserAccount();
+        userAccount.setUserId(userProfile.getId());
+        userAccount.setFirstName(userProfile.getFirstName());
+        userAccount.setLastName(userProfile.getLastName());
+        userAccount.setAvatarId(userProfile.getAvatarId());
+        return userAccount;
     }
 }

@@ -11,6 +11,7 @@ public class UserAccount implements Cloneable {
     private Long userId;
     private String firstName;
     private String lastName;
+    private Long avatarId;
 
     public UserAccount() {
     }
@@ -19,6 +20,7 @@ public class UserAccount implements Cloneable {
         this.setUserId(userAccount.getUserId());
         this.setFirstName(userAccount.getFirstName());
         this.setLastName(userAccount.getLastName());
+        this.setAvatarId(userAccount.getAvatarId());
     }
 
     public Long getUserId() {
@@ -43,6 +45,14 @@ public class UserAccount implements Cloneable {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    public Long getAvatarId() {
+        return avatarId;
+    }
+
+    public void setAvatarId(Long avatarId) {
+        this.avatarId = avatarId;
     }
 
     @Override
