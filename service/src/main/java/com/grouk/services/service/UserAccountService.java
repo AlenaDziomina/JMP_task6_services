@@ -49,9 +49,21 @@ public class UserAccountService extends AbstractService {
         userProfileDao.updateUserProfile(userProfile);
     }
 
+    public void updateUserAccountList(List<UserAccount> userAccountList) {
+        List<UserProfile> userProfileList = userAccountList.stream().map(userAccount -> (UserProfile) converter
+                .convert(context, userAccount, UserProfile.class)).collect(Collectors.toList());
+        userProfileDao.updateUserProfile(userProfileList);
+    }
+
     public void createUserAccount(UserAccount userAccount) {
         UserProfile userProfile = (UserProfile) converter.convert(context, userAccount, UserProfile.class);
         userProfileDao.createUserProfile(userProfile);
+    }
+
+    public void createUserAccountList(List<UserAccount> userAccountList) {
+        List<UserProfile> userProfileList = userAccountList.stream().map(userAccount -> (UserProfile) converter
+                .convert(context, userAccount, UserProfile.class)).collect(Collectors.toList());
+        userProfileDao.createUserProfile(userProfileList);
     }
 
     public void deleteUserAccount(Long userId) {

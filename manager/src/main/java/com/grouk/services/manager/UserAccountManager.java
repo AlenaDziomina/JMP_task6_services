@@ -41,8 +41,16 @@ public class UserAccountManager {
         userAccountService.updateUserAccount(userId, userAccount);
     }
 
+    public void updateUserAccountList(List<UserAccount> userAccountList) {
+        userAccountService.updateUserAccountList(userAccountList);
+    }
+
     public void createUserAccount(UserAccount userAccount) {
         userAccountService.createUserAccount(userAccount);
+    }
+
+    public void createUserAccount(List<UserAccount> userAccountList) {
+        userAccountService.createUserAccountList(userAccountList);
     }
 
     public void deleteUserAccount(Long userId) {

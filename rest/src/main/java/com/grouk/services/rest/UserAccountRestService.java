@@ -201,4 +201,43 @@ public class UserAccountRestService {
             throw publicExceptionFactory.createInternalException(e);
         }
     }
+
+    @PUT
+    @Path("/batch")
+    @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+
+    @ApiOperation(value = "Update list of UserAccount", response = Void.class)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Successful operation", response = Response.class),
+            @ApiResponse(code = 400, message = "Invalid ID supplied", response = Void.class),
+            @ApiResponse(code = 404, message = "User not found", response = Void.class)})
+
+    public void updateUserAccount(@ApiParam(value = "User's list that needs to update") List<UserAccount>
+                                              userAccountList) {
+        try {
+            userAccountManager.updateUserAccountList(userAccountList);
+        } catch (Exception e) {
+            throw publicExceptionFactory.createInternalException(e);
+        }
+    }
+
+    @POST
+    @Path("/batch")
+    @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+
+    @ApiOperation(value = "Create a list of a new UserAccount", response = Void.class)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Successful operation", response = Response.class),
+            @ApiResponse(code = 405, message = "Invalid input", response = Void.class)})
+
+    public void createUserAccount(@ApiParam(value = "User's list that needs to create") List<UserAccount>
+                                              userAccountList) {
+        try {
+            userAccountManager.createUserAccount(userAccountList);
+        } catch (Exception e) {
+            throw publicExceptionFactory.createInternalException(e);
+        }
+    }
+
+
 }

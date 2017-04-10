@@ -9,6 +9,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * User Profile DAO
@@ -35,20 +36,25 @@ public class UserProfileDao extends AbstractDao<UserProfile> {
     }
 
     public Long createUserProfile(UserProfile userProfile) {
-        List<Object> parameters = new ArrayList<>(3);
-        parameters.add(userProfile.getFirstName());
-        parameters.add(userProfile.getLastName());
-        parameters.add(userProfile.getAvatarId());
+        List<Object> parameters = getCreateParameters(userProfile);
         return create(SQL_CREATE, parameters);
     }
 
+    public void createUserProfile(List<UserProfile> userProfiles) {
+        List<List<Object>> parameters = userProfiles.stream().map(this::getCreateParameters).collect
+                (Collectors.toList());
+        batchUpdate(SQL_CREATE, parameters);
+    }
+
     public void updateUserProfile(UserProfile userProfile) {
-        List<Object> parameters = new ArrayList<>(4);
-        parameters.add(userProfile.getFirstName());
-        parameters.add(userProfile.getLastName());
-        parameters.add(userProfile.getAvatarId());
-        parameters.add(userProfile.getId());
+        List<Object> parameters = getUpdateParameters(userProfile);
         update(SQL_UPDATE, parameters);
+    }
+
+    public void updateUserProfile(List<UserProfile> userProfiles) {
+        List<List<Object>> parameters = userProfiles.stream().map(this::getUpdateParameters).collect
+                (Collectors.toList());
+        batchUpdate(SQL_UPDATE, parameters);
     }
 
     public void deleteUserProfile(Long userId) {
@@ -64,5 +70,22 @@ public class UserProfileDao extends AbstractDao<UserProfile> {
         Long avatarId = rs.getLong("AVATAR_ID");
         userProfile.setAvatarId(rs.wasNull() ? null : avatarId);
         return userProfile;
+    }
+
+    private List<Object> getUpdateParameters(UserProfile userProfile) {
+        List<Object> parameters = new ArrayList<>(4);
+        parameters.add(userProfile.getFirstName());
+        parameters.add(userProfile.getLastName());
+        parameters.add(userProfile.getAvatarId());
+        parameters.add(userProfile.getId());
+        return parameters;
+    }
+
+    private List<Object> getCreateParameters(UserProfile userProfile) {
+        List<Object> parameters = new ArrayList<>(3);
+        parameters.add(userProfile.getFirstName());
+        parameters.add(userProfile.getLastName());
+        parameters.add(userProfile.getAvatarId());
+        return parameters;
     }
 }

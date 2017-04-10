@@ -1,0 +1,8 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset>
+    <!--UserAvatar Table -->
+    <user_avatar id_avatar="1" image="111000111" />
+    <user_avatar id_avatar="2" image="111111111" />
+    <!--UserProfile Table -->
+    <user_profile id_user="111" first_name="first_name" last_name="last_name" avatar_id="1" />
+</dataset>

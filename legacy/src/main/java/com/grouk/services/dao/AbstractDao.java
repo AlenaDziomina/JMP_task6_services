@@ -96,6 +96,23 @@ class AbstractDao<T> {
         }
     }
 
+    void batchUpdate(String query, List<List<Object>> parameters) {
+        try (Connection con = DriverManager.getConnection(DB_URL); PreparedStatement ps = con.prepareStatement(query)) {
+            for (List<Object> params : parameters) {
+                setParameters(ps, params);
+                ps.addBatch();
+            }
+            int[] affectedRows = ps.executeBatch();
+            for (int affRows : affectedRows) {
+                if (affRows == 0) {
+                    throw new SQLException("Updating failed, no rows affected.");
+                }
+            }
+        } catch (SQLException e) {
+            throw new SqlDaoException(e);
+        }
+    }
+
     void delete(String query, List<Object> parameters) {
         try (Connection con = DriverManager.getConnection(DB_URL); PreparedStatement ps = con.prepareStatement(query)) {
 
